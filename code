@@ -1,0 +1,65 @@
+pip install streamlit PyPDF2
+import streamlit as st
+import PyPDF2
+
+# Predefined skills (you can edit this)
+skills_db = [
+    "python", "java", "c++", "machine learning", "data science",
+    "sql", "html", "css", "javascript", "react", "node"
+]
+
+def extract_text_from_pdf(file):
+    text = ""
+    pdf_reader = PyPDF2.PdfReader(file)
+    for page in pdf_reader.pages:
+        text += page.extract_text()
+    return text.lower()
+
+def analyze_resume(text):
+    score = 0
+    found_skills = []
+
+    # Check skills
+    for skill in skills_db:
+        if skill in text:
+            found_skills.append(skill)
+            score += 5
+
+    # Basic checks
+    if "project" in text:
+        score += 10
+    if "experience" in text:
+        score += 10
+    if "education" in text:
+        score += 10
+
+    # Suggestions
+    suggestions = []
+    if len(found_skills) < 5:
+        suggestions.append("Add more relevant skills")
+    if "project" not in text:
+        suggestions.append("Add projects section")
+    if "experience" not in text:
+        suggestions.append("Add experience section")
+
+    return score, found_skills, suggestions
+
+# UI
+st.title("📄 AI Resume Analyzer")
+
+uploaded_file = st.file_uploader("Upload your Resume (PDF)", type=["pdf"])
+
+if uploaded_file:
+    text = extract_text_from_pdf(uploaded_file)
+
+    score, skills, suggestions = analyze_resume(text)
+
+    st.subheader("📊 Resume Score")
+    st.write(f"{score}/100")
+
+    st.subheader("✅ Skills Found")
+    st.write(skills)
+
+    st.subheader("💡 Suggestions")
+    for s in suggestions:
+        st.write("- " + s)
