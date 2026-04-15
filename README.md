@@ -1,4 +1,4 @@
-#AI Resume Analyzer
+# AI Resume Analyzer
 
 ## 📌 Overview
 AI Resume Analyzer is a web-based application that analyzes resumes and provides feedback based on predefined criteria such as skills, sections, and keywords. It helps users improve their resumes for better job opportunities.
